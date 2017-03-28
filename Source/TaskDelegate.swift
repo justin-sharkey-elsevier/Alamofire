@@ -76,7 +76,7 @@ open class TaskDelegate: NSObject {
     var taskDidCompleteWithError: ((URLSession, URLSessionTask, Error?) -> Void)?
 
     @objc(URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:)
-    func urlSession(
+    public func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
         willPerformHTTPRedirection response: HTTPURLResponse,
@@ -93,7 +93,7 @@ open class TaskDelegate: NSObject {
     }
 
     @objc(URLSession:task:didReceiveChallenge:completionHandler:)
-    func urlSession(
+    public func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
         didReceive challenge: URLAuthenticationChallenge,
@@ -134,7 +134,7 @@ open class TaskDelegate: NSObject {
     }
 
     @objc(URLSession:task:needNewBodyStream:)
-    func urlSession(
+    public func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
         needNewBodyStream completionHandler: @escaping (InputStream?) -> Void)
@@ -149,7 +149,7 @@ open class TaskDelegate: NSObject {
     }
 
     @objc(URLSession:task:didCompleteWithError:)
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let taskDidCompleteWithError = taskDidCompleteWithError {
             taskDidCompleteWithError(session, task, error)
         } else {
@@ -171,13 +171,13 @@ open class TaskDelegate: NSObject {
 
 // MARK: -
 
-class DataTaskDelegate: TaskDelegate, URLSessionDataDelegate {
+open class DataTaskDelegate: TaskDelegate, URLSessionDataDelegate {
 
     // MARK: Properties
 
     var dataTask: URLSessionDataTask { return task as! URLSessionDataTask }
 
-    override var data: Data? {
+    override public var data: Data? {
         if dataStream != nil {
             return nil
         } else {
@@ -220,7 +220,7 @@ class DataTaskDelegate: TaskDelegate, URLSessionDataDelegate {
     var dataTaskDidReceiveData: ((URLSession, URLSessionDataTask, Data) -> Void)?
     var dataTaskWillCacheResponse: ((URLSession, URLSessionDataTask, CachedURLResponse) -> CachedURLResponse?)?
 
-    func urlSession(
+    public func urlSession(
         _ session: URLSession,
         dataTask: URLSessionDataTask,
         didReceive response: URLResponse,
@@ -237,7 +237,7 @@ class DataTaskDelegate: TaskDelegate, URLSessionDataDelegate {
         completionHandler(disposition)
     }
 
-    func urlSession(
+    public func urlSession(
         _ session: URLSession,
         dataTask: URLSessionDataTask,
         didBecome downloadTask: URLSessionDownloadTask)
@@ -245,7 +245,7 @@ class DataTaskDelegate: TaskDelegate, URLSessionDataDelegate {
         dataTaskDidBecomeDownloadTask?(session, dataTask, downloadTask)
     }
 
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         if initialResponseTime == nil { initialResponseTime = CFAbsoluteTimeGetCurrent() }
 
         if let dataTaskDidReceiveData = dataTaskDidReceiveData {
@@ -270,7 +270,7 @@ class DataTaskDelegate: TaskDelegate, URLSessionDataDelegate {
         }
     }
 
-    func urlSession(
+    public func urlSession(
         _ session: URLSession,
         dataTask: URLSessionDataTask,
         willCacheResponse proposedResponse: CachedURLResponse,
@@ -288,7 +288,7 @@ class DataTaskDelegate: TaskDelegate, URLSessionDataDelegate {
 
 // MARK: -
 
-class DownloadTaskDelegate: TaskDelegate, URLSessionDownloadDelegate {
+open class DownloadTaskDelegate: TaskDelegate, URLSessionDownloadDelegate {
 
     // MARK: Properties
 
@@ -298,7 +298,7 @@ class DownloadTaskDelegate: TaskDelegate, URLSessionDownloadDelegate {
     var progressHandler: (closure: Request.ProgressHandler, queue: DispatchQueue)?
 
     var resumeData: Data?
-    override var data: Data? { return resumeData }
+    override public var data: Data? { return resumeData }
 
     var destination: DownloadRequest.DownloadFileDestination?
 
@@ -327,7 +327,7 @@ class DownloadTaskDelegate: TaskDelegate, URLSessionDownloadDelegate {
     var downloadTaskDidWriteData: ((URLSession, URLSessionDownloadTask, Int64, Int64, Int64) -> Void)?
     var downloadTaskDidResumeAtOffset: ((URLSession, URLSessionDownloadTask, Int64, Int64) -> Void)?
 
-    func urlSession(
+    public func urlSession(
         _ session: URLSession,
         downloadTask: URLSessionDownloadTask,
         didFinishDownloadingTo location: URL)
@@ -361,7 +361,7 @@ class DownloadTaskDelegate: TaskDelegate, URLSessionDownloadDelegate {
         }
     }
 
-    func urlSession(
+    public func urlSession(
         _ session: URLSession,
         downloadTask: URLSessionDownloadTask,
         didWriteData bytesWritten: Int64,
@@ -388,7 +388,7 @@ class DownloadTaskDelegate: TaskDelegate, URLSessionDownloadDelegate {
         }
     }
 
-    func urlSession(
+    public func urlSession(
         _ session: URLSession,
         downloadTask: URLSessionDownloadTask,
         didResumeAtOffset fileOffset: Int64,
@@ -405,7 +405,7 @@ class DownloadTaskDelegate: TaskDelegate, URLSessionDownloadDelegate {
 
 // MARK: -
 
-class UploadTaskDelegate: DataTaskDelegate {
+open class UploadTaskDelegate: DataTaskDelegate {
 
     // MARK: Properties
 
