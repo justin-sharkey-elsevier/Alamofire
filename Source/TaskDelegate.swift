@@ -300,12 +300,12 @@ open class DownloadTaskDelegate: TaskDelegate, URLSessionDownloadDelegate {
     var resumeData: Data?
     override public var data: Data? { return resumeData }
 
-    var destination: DownloadRequest.DownloadFileDestination?
+    public var destination: DownloadRequest.DownloadFileDestination?
 
-    var temporaryURL: URL?
-    var destinationURL: URL?
+    public var temporaryURL: URL?
+    public var destinationURL: URL?
 
-    var fileURL: URL? { return destination != nil ? destinationURL : temporaryURL }
+    public var fileURL: URL? { return destination != nil ? destinationURL : temporaryURL }
 
     // MARK: Lifecycle
 
